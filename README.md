@@ -64,8 +64,8 @@ Body:
 {
   "numeroDoDocumento": "14041737706",
   "tipoDeConexao": "bifasico",
-  "classeDeConsumo": "rural",
-  "modalidadeTarifaria": "verde",
+  "classeDeConsumo": "comercial",
+  "modalidadeTarifaria": "convencional",
   "historicoDeConsumo": [
     3878, // mes atual
     9760, // mes anterior
@@ -76,7 +76,9 @@ Body:
     7538, // 6 meses atras
     4392, // 7 meses atras
     7859, // 8 meses atras
-    4160 // 9 meses atras
+    4160, // 9 meses atras
+    6941, // 10 meses atras
+    4597 // 11 meses atras
   ]
 }
 ```
@@ -86,7 +88,7 @@ Expected Response:
 ```json
 {
   "elegivel": true,
-  "economiaAnualDeCO2": 462.77
+  "economiaAnualDeCO2": 5553.24
 }
 ```
 
@@ -142,7 +144,23 @@ GET /api-docs
 
 ## ENV
 
-src/config/config.env
+Env File can be found on:
+**src/config/config.env**
+
+<table>
+  <tr>
+    <td><code>TTL</code></td>
+    <td>Time To Live: the number in milliseconds of the throttling rate</td>
+  </tr>
+  <tr>
+    <td><code>LIMIT</code></td>
+    <td>Number of Requests of throttling rate within the TTL</td>
+  </tr>
+  <tr>
+    <td><code>PORT</code></td>
+    <td>PORT of the current server</td>
+  </tr>
+</table>
 
 TTL=Rate Limitter Time To Live
 LIMIT= Rate Limitter Limite
@@ -153,7 +171,7 @@ Some Tests may use the Rate Limitter so don't forget about them when setting the
 
 Considere os json schemas abaixo como as definições da entrada e saída para o cálculo de elegibilidade:
 
-```jsx
+```js
 const {
   tiposDeConexao,
   classesDeConsumo,
@@ -184,6 +202,7 @@ const input = {
     classeDeConsumo: enumOf(classesDeConsumo),
     modalidadeTarifaria: enumOf(modalidadesTarifarias),
     historicoDeConsumo: {
+      // em kWh
       type: 'array',
       minItems: 3,
       maxItems: 12,
@@ -285,7 +304,7 @@ Para checar a elegibilidade iremos aplicar os seguintes critérios:
     - Clientes com tipo de conexão Monofásica só são elegíveis caso tenham consumo médio acima de 400 kWh.
     - Clientes com tipo de conexão Bifásica só são elegíveis caso tenham consumo médio acima de 500 kWh.
     - Clientes com tipo de conexão Trifásica só são elegíveis caso tenham consumo médio acima de 750 kWh.
-- Para calcular a projeção da **economia anual** de CO2, considere que para serem gerados 1000 kWh no Brasil são emitidos em média 84kg de CO2.
+- Para calcular a projeção da economia anual de CO2, considere que para serem gerados 1000 kWh no Brasil são emitidos em média 84kg de CO2.
 
 # Examples
 
@@ -321,7 +340,7 @@ Saída
 ```json
 {
   "elegivel": true,
-  "economiaAnualDeCO2": 462.77
+  "economiaAnualDeCO2": 5553.24
 }
 ```
 
