@@ -1,16 +1,19 @@
-import { Controller, Post, Body } from '@nestjs/common';
+import { Controller, Post, Body, Get } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { ClientsService } from './clients.service';
-// import { Request, Response } from 'express';
 import { ClientsDTO } from '../clients.dto';
-// import { ActivitiesSKU } from './activities.sku';
 
-@Controller({ path: 'clients', version: 'v1' })
+@Controller({ path: 'clients', version: '1' })
 @ApiTags('clients')
 export class ClientsControllerV1 {
   constructor(private clientsService: ClientsService) {}
 
-  @Post('/check-eligibility')
+  @Get('/')
+  find() {
+    return this.clientsService.helloWorld();
+  }
+
+  @Post('/')
   checkEligibility(@Body() body: ClientsDTO) {
     return this.clientsService.validateRules(body);
   }

@@ -1,59 +1,84 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Type } from 'class-transformer';
-import { IsString, Matches, ValidateNested } from 'class-validator';
+import {
+  IsString,
+  Matches,
+  Max,
+  Min,
+  IsArray,
+  ArrayMaxSize,
+  ArrayMinSize,
+  IsEnum,
+} from 'class-validator';
 
-export class CPFDTO {
-  @ApiProperty()
-  @IsString()
-  @Matches('^\\d{11}$')
-  cpf: string;
+export enum TiposDeConexao {
+  monofasico = 'monofasico',
+  bifasico = 'bifasico',
+  trifasico = 'trifasico',
 }
 
-export class CNPJDTO {
-  @ApiProperty()
-  @IsString()
-  @Matches('^\\d{14}$')
-  cnpj: string;
+export enum ClassesDeConsumo {
+  residencial = 'residencial',
+  industrial = 'industrial',
+  comercial = 'comercial',
+  rural = 'rural',
+  poderPublico = 'poderPublico',
+}
+
+export enum ModalidadesTarifarias {
+  azul = 'azul',
+  branca = 'branca',
+  verde = 'verde',
+  convencional = 'convencional',
+}
+
+export enum ClassesDeConsumoValida {
+  residencial = 'residencial',
+  industrial = 'industrial',
+  comercial = 'comercial',
+}
+
+export enum ModalidadesTarifariasValidas {
+  branca = 'branca',
+  convencional = 'convencional',
 }
 
 export class ClientsDTO {
   //One Of CPF or CNPJ Required
   @ApiProperty({
-    oneOf: [
-      {
-        type: 'object',
-        required: ['cpf'],
-        properties: {
-          cpf: {
-            type: 'string',
-          },
-        },
-      },
-      {
-        type: 'object',
-        required: ['cnpj'],
-        properties: {
-          cnpj: {
-            type: 'string',
-          },
-        },
-      },
-    ],
+    description: 'CPF or CNPJ, 11 or 14 digits',
+    default: '11111111111',
   })
-  @ValidateNested()
-  @Type((type) => (type.object.cpfOrCnpj.cpf ? CPFDTO : CNPJDTO))
-  cpfOrCnpj: CPFDTO | CNPJDTO;
+  @IsString()
+  @Matches('^(\\d{11}|\\d{14})$')
+  public numeroDoDocumento: string;
 
   @ApiProperty({ enum: ['monofasico', 'bifasico', 'trifasico'] })
-  tiposDeConexao: string;
+  @IsEnum(TiposDeConexao)
+  public tipoDeConexao: string;
 
   @ApiProperty({
     enum: ['residencial', 'industrial', 'comercial', 'rural', 'poderPublico'],
   })
-  classesDeConsumo: string;
+  @IsEnum(ClassesDeConsumo)
+  public classeDeConsumo: string;
 
   @ApiProperty({
     enum: ['azul', 'branca', 'verde', 'convencional'],
+    default: 'branca',
   })
-  modalidadesTarifarias: string;
+  @IsEnum(ModalidadesTarifarias)
+  public modalidadeTarifaria: string;
+
+  @ApiProperty({
+    type: [Number],
+    minimum: 0,
+    maximum: 9999,
+    default: [3878, 9760, 5976, 2797, 2481],
+  })
+  @IsArray()
+  @ArrayMinSize(3)
+  @ArrayMaxSize(12)
+  @Min(0, { each: true })
+  @Max(9999, { each: true })
+  public historicoDeConsumo: number[];
 }
