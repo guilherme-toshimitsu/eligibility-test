@@ -4,12 +4,16 @@ import { ValidationPipe, VersioningType } from '@nestjs/common';
 import { AppModule } from './app.module';
 import { name, description, version } from '../package.json';
 import helmet from 'helmet';
+import { logger } from './logs/logger';
 // somewhere in your initialization file
 async function bootstrap() {
   const port = process.env.port || 3000;
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, {
+    logger: logger,
+  });
 
   app.useGlobalPipes(new ValidationPipe({ transform: true }));
+
   //TODO Config Helmet
   app.use(helmet());
   app.enableVersioning({

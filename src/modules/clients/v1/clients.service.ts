@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import {
   ClientsDTO,
   ClassesDeConsumoValida,
@@ -10,9 +10,10 @@ import { ERRORS } from '../errors/client.errors';
 
 @Injectable()
 export class ClientsService {
-  constructor() {}
+  constructor(private readonly logger: Logger) {}
 
   validateRules(body: ClientsDTO) {
+    this.logger.log(`Validating New Consumer`);
     const totalConsumption = body.historicoDeConsumo.reduce(
       (sum, value) => sum + value,
       0,
@@ -30,11 +31,16 @@ export class ClientsService {
     const arrOfErrors = errors.filter((val) => val);
 
     if (arrOfErrors.length) {
+      this.logger.log(
+        `Called Validation Ineligible:  ${arrOfErrors.join(', ')}`,
+      );
+
       return {
         elegivel: false,
         razoesDeInelegibilidade: arrOfErrors,
       };
     } else {
+      this.logger.log('Called Validation Success');
       return {
         elegivel: true,
         economiaAnualDeCO2:

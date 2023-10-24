@@ -74,6 +74,8 @@ export class ClientsDTO {
     type: [Number],
     minimum: 0,
     maximum: 9999,
+    maxLength: 12,
+    minLength: 3,
     default: [3878, 9760, 5976, 2797, 2481],
   })
   @Min(0, { each: true })

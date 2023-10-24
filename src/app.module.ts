@@ -17,7 +17,7 @@ import { HealthModule } from './modules/health/health.module';
     ThrottlerModule.forRoot([
       {
         ttl: Number(process.env.TTL),
-        limit: Number(process.env.limit),
+        limit: Number(process.env.LIMIT),
       },
     ]),
     ClientsModuleV1,

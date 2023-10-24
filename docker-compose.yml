@@ -1,0 +1,15 @@
+version: '3'
+
+services:
+  app:
+    container_name: eligibility-test
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - 3000:3000
+    environment:
+      NODE_ENV: production
+    volumes:
+      - ./data:/app/data
+      - ./logs:/app/logs
