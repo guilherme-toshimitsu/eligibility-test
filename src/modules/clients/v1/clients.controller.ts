@@ -13,7 +13,7 @@ export class ClientsControllerV1 {
     return this.clientsService.helloWorld();
   }
 
-  @Post('/')
+  @Post('/check-eligibility')
   @HttpCode(200)
   checkEligibility(@Body() body: ClientsDTO) {
     return this.clientsService.validateRules(body);

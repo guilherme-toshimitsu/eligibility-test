@@ -4,7 +4,7 @@ import { ValidationPipe, VersioningType } from '@nestjs/common';
 import { AppModule } from './app.module';
 import { name, description, version } from '../package.json';
 import helmet from 'helmet';
-import { logger } from './logs/logger';
+import { logger } from './logger/logger';
 // somewhere in your initialization file
 async function bootstrap() {
   const port = process.env.port || 3000;
