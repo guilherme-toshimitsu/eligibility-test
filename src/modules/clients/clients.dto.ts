@@ -44,6 +44,7 @@ export enum ModalidadesTarifariasValidas {
 
 export class ClientsDTO {
   //One Of CPF or CNPJ Required
+  //TODO: Merge a correct CPF and CNPJ regex or do CPF/CNPJ Validation in Controller
   @ApiProperty({
     description: 'CPF or CNPJ, 11 or 14 digits',
     default: '11111111111',
@@ -75,10 +76,10 @@ export class ClientsDTO {
     maximum: 9999,
     default: [3878, 9760, 5976, 2797, 2481],
   })
-  @IsArray()
-  @ArrayMinSize(3)
-  @ArrayMaxSize(12)
   @Min(0, { each: true })
   @Max(9999, { each: true })
+  @ArrayMaxSize(12)
+  @ArrayMinSize(3)
+  @IsArray()
   public historicoDeConsumo: number[];
 }
